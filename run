@@ -1,4 +1,4 @@
-SCRIPT_PATH=$(dirname `which $0`)
+SCRIPT_PATH=$(dirname `type -p $0`)
 
 ls $SCRIPT_PATH/ggml-model-q4_k.gguf 1> /dev/null 2> /dev/null || {
 	rm $SCRIPT_PATH/ggml-model-q4_k.gguf_* 2> /dev/null
