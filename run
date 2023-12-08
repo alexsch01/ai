@@ -1,14 +1,27 @@
 SCRIPT_PATH=$(dirname `type -p $0`)
 
 ls $SCRIPT_PATH/ggml-model-q4_k.gguf 1> /dev/null 2> /dev/null || {
-	rm $SCRIPT_PATH/ggml-model-q4_k.gguf_* 2> /dev/null
+       rm $SCRIPT_PATH/ggml-model-q4_k.gguf_* 2> /dev/null
 
-	wget -P $SCRIPT_PATH https://github.com/alexsch01/llama.cpp/releases/download/model/ggml-model-q4_k.gguf_part1
-	wget -P $SCRIPT_PATH https://github.com/alexsch01/llama.cpp/releases/download/model/ggml-model-q4_k.gguf_part2
-	wget -P $SCRIPT_PATH https://github.com/alexsch01/llama.cpp/releases/download/model/ggml-model-q4_k.gguf_part3
+       wget -P $SCRIPT_PATH https://github.com/alexsch01/llama.cpp/releases/download/model/ggml-model-q4_k.gguf_part1
+       wget -P $SCRIPT_PATH https://github.com/alexsch01/llama.cpp/releases/download/model/ggml-model-q4_k.gguf_part2
+       wget -P $SCRIPT_PATH https://github.com/alexsch01/llama.cpp/releases/download/model/ggml-model-q4_k.gguf_part3
 
-	cat $SCRIPT_PATH/ggml-model-q4_k.gguf_* > $SCRIPT_PATH/ggml-model-q4_k.gguf
-	rm $SCRIPT_PATH/ggml-model-q4_k.gguf_*
+       cat $SCRIPT_PATH/ggml-model-q4_k.gguf_* > $SCRIPT_PATH/ggml-model-q4_k.gguf
+       rm $SCRIPT_PATH/ggml-model-q4_k.gguf_*
 }
 
-$SCRIPT_PATH/server -m $SCRIPT_PATH/ggml-model-q4_k.gguf --port 8888 --host 0.0.0.0 --ctx-size 10240 --parallel 4 -ngl 99 -n 512 --log-disable
+LOCAL_PORT=8888
+
+which ip 1> /dev/null 2> /dev/null && {
+       LOCAL_IP=$(ip route get 1 | sed -n 's/^.*src \([0-9.]*\) .*$/\1/p')
+} || {
+       $1 route 1> /dev/null 2> /dev/null && {
+               LOCAL_IP=$($1 route get 1 | sed -n 's/^.*src \([0-9.]*\) .*$/\1/p')
+       } || {
+               LOCAL_IP=0.0.0.0
+       }
+}
+
+echo
+$SCRIPT_PATH/server -m $SCRIPT_PATH/ggml-model-q4_k.gguf --port $LOCAL_PORT --host $LOCAL_IP --ctx-size 10240 --parallel 4 -ngl 99 -n 512 --log-disable 2> /dev/null
