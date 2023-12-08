@@ -11,4 +11,4 @@ ls $SCRIPT_PATH/ggml-model-q4_k.gguf 1> /dev/null 2> /dev/null || {
 	rm $SCRIPT_PATH/ggml-model-q4_k.gguf_*
 }
 
-$SCRIPT_PATH/server -m $SCRIPT_PATH/ggml-model-q4_k.gguf --port 8888 --host 0.0.0.0 --ctx-size 10240 --parallel 4 -ngl 99 -n 512
+$SCRIPT_PATH/server -m $SCRIPT_PATH/ggml-model-q4_k.gguf --port 8888 --host 0.0.0.0 --ctx-size 10240 --parallel 4 -ngl 99 -n 512 00
